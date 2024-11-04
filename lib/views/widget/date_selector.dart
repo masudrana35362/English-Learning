@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 class DateSelector extends StatefulWidget {
   final ValueChanged<DateTime> onDateSelected; // Callback function
 
-  const DateSelector({Key? key, required this.onDateSelected}) : super(key: key);
+  const DateSelector({super.key, required this.onDateSelected});
 
   @override
   State<DateSelector> createState() => _DateSelectorState();

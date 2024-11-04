@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class EditWord extends StatefulWidget {
   final String id;
 
-  EditWord({super.key, required this.id});
+  const EditWord({super.key, required this.id});
 
   @override
   State<EditWord> createState() => _EditWordState();
