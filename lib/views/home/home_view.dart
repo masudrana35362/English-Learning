@@ -20,27 +20,31 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  DateTime selectedDate = DateTime.now().toUtc().add(const Duration(hours: 6));
+
   @override
   Widget build(BuildContext context) {
-    // Get the current date
-    final nowInDhaka = DateTime.now().toUtc().add(const Duration(hours: 6));
-    final String formattedDate =
-        DateFormat('dd-MM-yyyy').format(nowInDhaka);
+    // Format the selected date
+    final String formattedDate = DateFormat('dd-MM-yyyy').format(selectedDate);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Words'),
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AddNewTask(),
-                ),
-              );
-            },
-            icon: const Icon(
-              CupertinoIcons.add,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddNewTask(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                CupertinoIcons.add,
+              ),
             ),
           ),
         ],
@@ -48,7 +52,14 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const DateSelector(),
+            DateSelector(
+              onDateSelected: (date) {
+                setState(() {
+                  selectedDate = date; // Update the selected date
+                });
+              },
+            ),
+            const SizedBox(height: 10),
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection("users")

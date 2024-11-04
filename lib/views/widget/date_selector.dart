@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DateSelector extends StatefulWidget {
-  const DateSelector({super.key});
+  final ValueChanged<DateTime> onDateSelected; // Callback function
+
+  const DateSelector({Key? key, required this.onDateSelected}) : super(key: key);
 
   @override
   State<DateSelector> createState() => _DateSelectorState();
@@ -34,7 +38,7 @@ class _DateSelectorState extends State<DateSelector> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
+                icon: const Icon(Icons.arrow_back_ios, size: 20),
                 onPressed: () {
                   setState(() {
                     weekOffset--;
@@ -44,12 +48,12 @@ class _DateSelectorState extends State<DateSelector> {
               Text(
                 monthName,
                 style: const TextStyle(
-                  fontSize: 24,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.arrow_forward_ios),
+                icon: const Icon(Icons.arrow_forward_ios, size: 20),
                 onPressed: () {
                   setState(() {
                     weekOffset++;
@@ -62,14 +66,14 @@ class _DateSelectorState extends State<DateSelector> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: SizedBox(
-            height: 80,
+            height: 50,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: weekDates.length,
               itemBuilder: (context, index) {
                 DateTime date = weekDates[index];
                 bool isSelected = DateFormat('d').format(selectedDate) ==
-                        DateFormat('d').format(date) &&
+                    DateFormat('d').format(date) &&
                     selectedDate.month == date.month &&
                     selectedDate.year == date.year;
 
@@ -78,11 +82,12 @@ class _DateSelectorState extends State<DateSelector> {
                     setState(() {
                       selectedDate = date;
                     });
+                    widget.onDateSelected(date); // Call the callback
+                    log('Selected date: $selectedDate');
                   },
                   child: Container(
-                    width: (MediaQuery.of(context).size.width-80)/ 7,
-                    margin:
-                        const EdgeInsets.only(right: 8), // Space between items
+                    width: (MediaQuery.of(context).size.width - 80) / 7,
+                    margin: const EdgeInsets.only(right: 8), // Space between items
                     decoration: BoxDecoration(
                       color: isSelected
                           ? Colors.deepOrangeAccent
@@ -108,8 +113,8 @@ class _DateSelectorState extends State<DateSelector> {
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          DateFormat('E')
-                              .format(date), // Short weekday (Mon, Tue, etc.)
+                          DateFormat('E') // Short weekday (Mon, Tue, etc.)
+                              .format(date),
                           style: TextStyle(
                             color: isSelected ? Colors.white : Colors.black87,
                             fontSize: 12,
