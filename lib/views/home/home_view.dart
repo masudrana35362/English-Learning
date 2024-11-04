@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:english_learning/views/home/widget/edit_word.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -87,9 +88,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   itemBuilder: (context, index) {
                     final wordData = snapshot.data!.docs[index].data()
                         as Map<String, dynamic>;
-                    return TaskCard(
-                      headerText: wordData['word'] ?? 'No Word',
-                      descriptionText: wordData['meaning'] ?? 'No Meaning',
+                    return GestureDetector(
+                      onLongPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditWord(id: snapshot.data!.docs[index].id),
+                          ),
+                        );
+                      },
+                      child: TaskCard(
+                        headerText: wordData['word'] ?? 'No Word',
+                        descriptionText: wordData['meaning'] ?? 'No Meaning',
+                      ),
                     );
                   },
                 );
