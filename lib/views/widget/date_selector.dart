@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:english_learning/helper/widget/field_label.dart';
+import 'package:english_learning/helper/widget/neu_box.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -29,99 +31,95 @@ class _DateSelectorState extends State<DateSelector> {
     String monthName = DateFormat('MMMM').format(weekDates.first);
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0).copyWith(
-            bottom: 10.0,
-          ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios, size: 20),
-                onPressed: () {
-                  setState(() {
-                    weekOffset--;
-                  });
-                },
-              ),
-              Text(
-                monthName,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              SizedBox(
+                width: 60,
+                height: 60,
+                child: NeuBox(
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios, size: 20),
+                    onPressed: () {
+                      setState(() {
+                        weekOffset--;
+                      });
+                    },
+                  ),
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.arrow_forward_ios, size: 20),
-                onPressed: () {
-                  setState(() {
-                    weekOffset++;
-                  });
-                },
+              FieldLabel(label: monthName),
+              SizedBox(
+                width: 60,
+                height: 60,
+                child: NeuBox(
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_forward_ios, size: 20),
+                    onPressed: () {
+                      setState(() {
+                        weekOffset++;
+                      });
+                    },
+                  ),
+                ),
               ),
             ],
           ),
         ),
-        Padding(
+        Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: SizedBox(
-            height: 50,
+            height: 60,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: weekDates.length,
               itemBuilder: (context, index) {
                 DateTime date = weekDates[index];
                 bool isSelected = DateFormat('d').format(selectedDate) ==
-                    DateFormat('d').format(date) &&
+                        DateFormat('d').format(date) &&
                     selectedDate.month == date.month &&
                     selectedDate.year == date.year;
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedDate = date;
-                    });
-                    widget.onDateSelected(date); // Call the callback
-                    log('Selected date: $selectedDate');
-                  },
-                  child: Container(
-                    width: (MediaQuery.of(context).size.width - 80) / 7,
-                    margin: const EdgeInsets.only(right: 8), // Space between items
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? Colors.deepOrangeAccent
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: isSelected
-                            ? Colors.deepOrangeAccent
-                            : Colors.grey.shade300,
-                        width: 2,
+                return SizedBox(
+                  width: (MediaQuery.of(context).size.width - 35) / 7,
+                  height: 60,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedDate = date;
+                      });
+                      widget.onDateSelected(date); // Call the callback
+                      log('Selected date: $selectedDate');
+                    },
+                    child: NeuBox(
+                      color: isSelected ? Colors.deepOrangeAccent : null,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            DateFormat('d').format(date), // Day of the month
+                            style: TextStyle(
+                              color: isSelected ? Colors.black : Colors.grey,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            DateFormat('E') // Short weekday (Mon, Tue, etc.)
+                                .format(date),
+                            style: TextStyle(
+                              color: isSelected ? Colors.black : Colors.grey,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          DateFormat('d').format(date), // Day of the month
-                          style: TextStyle(
-                            color: isSelected ? Colors.white : Colors.black87,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          DateFormat('E') // Short weekday (Mon, Tue, etc.)
-                              .format(date),
-                          style: TextStyle(
-                            color: isSelected ? Colors.white : Colors.black87,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 );

@@ -2,12 +2,18 @@ import 'package:english_learning/views/home/home_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../helper/widget/custom_button.dart';
+import '../../helper/widget/empty_spacer_helper.dart';
+import '../../helper/widget/field_label.dart';
+import '../../helper/widget/neu_box.dart';
+import '../../helper/widget/text_field.dart';
 import '../signup/signup_view.dart';
 
 class LoginView extends StatefulWidget {
   static route() => MaterialPageRoute(
-    builder: (context) => const LoginView(),
-  );
+        builder: (context) => const LoginView(),
+      );
+
   const LoginView({super.key});
 
   @override
@@ -18,6 +24,8 @@ class _LoginPageState extends State<LoginView> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  final ValueNotifier obscurePass = ValueNotifier<bool>(true);
+  final ValueNotifier loadingSignIn = ValueNotifier<bool>(false);
 
   @override
   void dispose() {
@@ -27,9 +35,10 @@ class _LoginPageState extends State<LoginView> {
   }
 
   Future<void> loginUserWithEmailAndPassword() async {
+    loadingSignIn.value = true;
     try {
       final userCredential =
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
@@ -37,82 +46,97 @@ class _LoginPageState extends State<LoginView> {
       if (userCredential.user == null) {
         return;
       }
-      Navigator.pushAndRemoveUntil(context, MyHomePage.route(), (route) => false);
-
+      Navigator.pushAndRemoveUntil(
+          context, MyHomePage.route(), (route) => false);
     } on FirebaseAuthException catch (e) {
       print(e.message);
     }
+    loadingSignIn.value = false;
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Sign In.',
-                style: TextStyle(
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 30),
-              TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  hintText: 'Email',
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextFormField(
-                controller: passwordController,
-                decoration: const InputDecoration(
-                  hintText: 'Password',
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  await loginUserWithEmailAndPassword();
-                },
-                child: const Text(
-                  'SIGN IN',
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(context, SignupView.route());
-                },
-                child: RichText(
-                  text: TextSpan(
-                    text: 'Don\'t have an account? ',
-                    style: Theme.of(context).textTheme.titleMedium,
-                    children: [
-                      TextSpan(
-                        text: 'Sign Up',
-                        style:
-                        Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            NeuBox(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const FieldLabel(
+                      label: 'S I G N  I N',
+                      fontSize: 22,
+                    ),
+                    EmptySpace.emptyHeight(20),
+                    FieldWithLabel(
+                        label: "Email",
+                        hintText: "Enter your email",
+                        controller: emailController),
+                    PassFieldWithLabel(
+                      label: "Password",
+                      hintText: "Enter your password",
+                      valueListenable: obscurePass,
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.done,
+                      controller: passwordController,
+                      svgPrefix: Icons.lock,
+                      onFieldSubmitted: (value) {},
+                    ),
+                    EmptySpace.emptyHeight(20),
+                    ValueListenableBuilder(
+                      valueListenable: loadingSignIn,
+                      builder: (context, value, child) => SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: CustomButton(
+                          onPressed: () async {
+                            await loginUserWithEmailAndPassword();
+                          },
+                          btText: 'S I G N  I N',
+                          isLoading: value,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    EmptySpace.emptyHeight(20),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, SignupView.route());
+                      },
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Don\'t have an account? ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                          children: [
+                            TextSpan(
+                              text: 'Sign Up',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

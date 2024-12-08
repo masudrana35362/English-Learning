@@ -104,7 +104,7 @@ class _SignUpPageState extends State<SignupView> {
                       label: 'S I G N  U P',
                       fontSize: 22,
                     ),
-                    const SizedBox(height: 10),
+                    EmptySpace.emptyHeight(20),
                     FieldWithLabel(
                         label: "Name",
                         hintText: "Enter your name",

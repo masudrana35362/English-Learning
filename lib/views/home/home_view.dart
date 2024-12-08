@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:english_learning/helper/widget/empty_spacer_helper.dart';
 import 'package:english_learning/views/home/widget/edit_word.dart';
 import 'package:english_learning/views/home/widget/my_drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,31 +29,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     // Format the selected date
     final String formattedDate = DateFormat('dd-MM-yyyy').format(selectedDate);
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(
-        title: const Text('My Words'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddNewTask(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                CupertinoIcons.add,
-              ),
-            ),
-          ),
-        ],
-      ),
-      drawer: const MyDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -63,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
-            const SizedBox(height: 10),
+            EmptySpace.emptyHeight(10),
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection("users")
@@ -84,29 +62,32 @@ class _MyHomePageState extends State<MyHomePage> {
                   return const Center(child: Text('No data here :('));
                 }
 
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    final wordData = snapshot.data!.docs[index].data()
-                        as Map<String, dynamic>;
-                    return GestureDetector(
-                      onLongPress: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                EditWord(id: snapshot.data!.docs[index].id),
-                          ),
-                        );
-                      },
-                      child: TaskCard(
-                        headerText: wordData['word'] ?? 'No Word',
-                        descriptionText: wordData['meaning'] ?? 'No Meaning',
-                      ),
-                    );
-                  },
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      final wordData = snapshot.data!.docs[index].data()
+                          as Map<String, dynamic>;
+                      return GestureDetector(
+                        onLongPress: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  EditWord(id: snapshot.data!.docs[index].id),
+                            ),
+                          );
+                        },
+                        child: TaskCard(
+                          headerText: wordData['word'] ?? 'No Word',
+                          descriptionText: wordData['meaning'] ?? 'No Meaning',
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             ),

@@ -1,3 +1,4 @@
+import 'package:english_learning/helper/widget/neu_box.dart';
 import 'package:flutter/material.dart';
 
 class TaskCard extends StatelessWidget {
@@ -12,15 +13,9 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 10,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      color: Colors.white,
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    return NeuBox(
+      child:Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10,),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

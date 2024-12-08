@@ -1,3 +1,4 @@
+import 'package:english_learning/helper/widget/alerts.dart';
 import 'package:english_learning/views/login/login_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -55,14 +56,22 @@ class MyDrawer extends StatelessWidget {
               title: const Text('L O G O U T'),
               leading: const Icon(Icons.logout),
               onTap: () async {
-                // user logout
-                try {
-                  await FirebaseAuth.instance.signOut();
-                  Navigator.pushAndRemoveUntil(
-                      context, LoginView.route(), (route) => false);
-                } on FirebaseAuthException catch (e) {
-                  print(e.message);
-                }
+                // add a confirmation dialog
+                Alerts().confirmationAlert(
+                    context: context,
+                    title: 'Are you sure?',
+                    buttonText: 'Logout',
+                    description: 'Do you want to logout?',
+                    onConfirm: () async {
+                      // user logout
+                      try {
+                        await FirebaseAuth.instance.signOut();
+                        Navigator.pushAndRemoveUntil(
+                            context, LoginView.route(), (route) => false);
+                      } on FirebaseAuthException catch (e) {
+                        print(e.message);
+                      }
+                    });
               },
             ),
           ),
