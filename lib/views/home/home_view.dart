@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:english_learning/views/home/widget/edit_word.dart';
+import 'package:english_learning/views/home/widget/my_drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final String formattedDate = DateFormat('dd-MM-yyyy').format(selectedDate);
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         title: const Text('My Words'),
         actions: [
@@ -50,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
+      drawer: const MyDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -93,7 +96,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => EditWord(id: snapshot.data!.docs[index].id),
+                            builder: (context) =>
+                                EditWord(id: snapshot.data!.docs[index].id),
                           ),
                         );
                       },
