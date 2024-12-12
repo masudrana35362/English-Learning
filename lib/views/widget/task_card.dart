@@ -25,14 +25,14 @@ class TaskCard extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: "$headerText - ",
-                    style: const TextStyle(
-                        color: Colors.red,
+                    style:  TextStyle(
+                        color: Colors.blue.shade600,
                         fontSize: 18,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.w600),
                   ),
                   TextSpan(
                     text: descriptionText,
-                    style: const TextStyle(color: Colors.blue, fontSize: 16),
+                    style:  TextStyle(color: Colors.blue.shade600, fontSize: 16),
                   ),
                 ],
               ),
