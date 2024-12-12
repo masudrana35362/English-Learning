@@ -17,6 +17,7 @@ class FieldWithLabel extends StatelessWidget {
   final controller;
   final bool disabled;
   final double? height;
+  final int? maxLines;
 
   const FieldWithLabel({
     super.key,
@@ -32,6 +33,7 @@ class FieldWithLabel extends StatelessWidget {
     this.disabled = false,
     this.controller,
     this.height,
+    this.maxLines
   });
 
   setInitialValue(value) {
@@ -53,6 +55,7 @@ class FieldWithLabel extends StatelessWidget {
             keyboardType: keyboardType,
             textInputAction: textInputAction ?? TextInputAction.next,
             controller: controller,
+            maxLines: maxLines,
             decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                 fillColor: Colors.white,

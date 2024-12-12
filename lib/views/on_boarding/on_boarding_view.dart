@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../view_models/on_boarding_view_model.dart';
-import '../add_new.dart';
+import '../add_word/add_new.dart';
 import '../home/home_view.dart';
 import '../home/widget/my_drawer.dart';
 

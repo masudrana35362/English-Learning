@@ -2,6 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../../helper/widget/custom_button.dart';
+import '../../../helper/widget/empty_spacer_helper.dart';
+import '../../../helper/widget/text_field.dart';
+
 class EditWord extends StatefulWidget {
   final String id;
 
@@ -14,6 +18,7 @@ class EditWord extends StatefulWidget {
 class _EditWordState extends State<EditWord> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+  ValueNotifier<bool> isLoading = ValueNotifier(false);
 
   @override
   void initState() {
@@ -31,10 +36,8 @@ class _EditWordState extends State<EditWord> {
           .get();
 
       if (document.exists) {
-        titleController.text =
-            document['word']; // Adjust field names as necessary
-        descriptionController.text =
-            document['meaning']; // Adjust field names as necessary
+        titleController.text = document['word']; // Adjust field names as necessary
+        descriptionController.text = document['meaning']; // Adjust field names as necessary
       } else {
         // Handle document not found
         print('Document does not exist.');
@@ -45,6 +48,7 @@ class _EditWordState extends State<EditWord> {
   }
 
   Future<void> updateTaskToDb() async {
+    isLoading.value = true;
     try {
       await FirebaseFirestore.instance
           .collection('users')
@@ -55,26 +59,30 @@ class _EditWordState extends State<EditWord> {
         'word': titleController.text,
         'meaning': descriptionController.text,
       });
+      isLoading.value = false;
       // Optionally show a success message or navigate back
       Navigator.pop(context);
     } catch (e) {
       print('Error updating document: $e');
       // Handle error (e.g., show an error message)
     }
+
   }
 
   @override
   void dispose() {
     titleController.dispose();
     descriptionController.dispose();
+    isLoading.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: const Text('Edit Task'),
+        title: const Text('E D I T  W O R D'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -82,32 +90,33 @@ class _EditWordState extends State<EditWord> {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              TextFormField(
+              FieldWithLabel(
+                label: 'Word',
+                hintText: 'Word',
                 controller: titleController,
-                decoration: const InputDecoration(
-                  hintText: 'Word',
-                ),
               ),
-              const SizedBox(height: 10),
-              TextFormField(
+              FieldWithLabel(
+                label: 'Meaning',
+                hintText: 'Meaning',
                 controller: descriptionController,
-                decoration: const InputDecoration(
-                  hintText: 'Meaning',
-                ),
                 maxLines: 3,
               ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  await updateTaskToDb();
+              EmptySpace.emptyHeight(20),
+              ValueListenableBuilder(
+                valueListenable: isLoading,
+                builder: (BuildContext context, bool value, Widget? child) {
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 46,
+                    child: CustomButton(
+                        onPressed: () async {
+                          await updateTaskToDb();
+                        },
+                        btText: 'U P D A T E',
+                        isLoading: value),
+                  );
                 },
-                child: const Text(
-                  'Update',
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ),
+              )
             ],
           ),
         ),

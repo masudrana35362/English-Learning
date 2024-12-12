@@ -25,7 +25,9 @@ class MyDrawer extends StatelessWidget {
             child: ListTile(
               title: const Text('H O M E'),
               leading: const Icon(Icons.home),
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+              },
             ),
           ),
           Padding(
@@ -35,10 +37,7 @@ class MyDrawer extends StatelessWidget {
               leading: const Icon(Icons.settings),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingsView()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsView()));
               },
             ),
           ),
@@ -47,7 +46,9 @@ class MyDrawer extends StatelessWidget {
             child: ListTile(
               title: const Text('A B O U T'),
               leading: const Icon(Icons.perm_device_info),
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+              },
             ),
           ),
           Padding(
@@ -66,8 +67,7 @@ class MyDrawer extends StatelessWidget {
                       // user logout
                       try {
                         await FirebaseAuth.instance.signOut();
-                        Navigator.pushAndRemoveUntil(
-                            context, LoginView.route(), (route) => false);
+                        Navigator.pushAndRemoveUntil(context, LoginView.route(), (route) => false);
                       } on FirebaseAuthException catch (e) {
                         print(e.message);
                       }
