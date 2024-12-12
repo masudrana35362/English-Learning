@@ -1,4 +1,5 @@
 import 'package:english_learning/helper/widget/alerts.dart';
+import 'package:english_learning/helper/widget/neu_box.dart';
 import 'package:english_learning/views/login/login_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,18 @@ class MyDrawer extends StatelessWidget {
       child: Column(
         children: [
           DrawerHeader(
-              child: Icon(
-            Icons.layers,
-            size: 40,
-            color: Theme.of(context).colorScheme.inversePrimary,
-          )),
+              child: Column(
+                children: [
+                  NeuBox(
+                    child: Icon(Icons.account_circle_outlined, size: 50,color: Colors.grey.shade600,),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    FirebaseAuth.instance.currentUser!.email!,
+                    style:  TextStyle(color: Colors.grey.shade600,fontWeight: FontWeight.w600),
+                  ),
+                ],
+              )),
           Padding(
             padding: const EdgeInsets.only(left: 25.0, top: 25.0),
             child: ListTile(

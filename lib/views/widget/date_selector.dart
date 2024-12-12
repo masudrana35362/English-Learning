@@ -73,7 +73,7 @@ class _DateSelectorState extends State<DateSelector> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: SizedBox(
-            height: 60,
+            height: 64,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: weekDates.length,
