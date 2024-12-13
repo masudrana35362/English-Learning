@@ -7,6 +7,7 @@ import '../../helper/widget/empty_spacer_helper.dart';
 import '../../helper/widget/field_label.dart';
 import '../../helper/widget/neu_box.dart';
 import '../../helper/widget/text_field.dart';
+import '../on_boarding/on_boarding_view.dart';
 import '../signup/signup_view.dart';
 
 class LoginView extends StatefulWidget {
@@ -47,7 +48,7 @@ class _LoginPageState extends State<LoginView> {
         return;
       }
       Navigator.pushAndRemoveUntil(
-          context, MyHomePage.route(), (route) => false);
+          context, OnboardingView.route(), (route) => false);
     } on FirebaseAuthException catch (e) {
       print(e.message);
     }

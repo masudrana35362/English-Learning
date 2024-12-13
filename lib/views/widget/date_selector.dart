@@ -112,6 +112,7 @@ class _DateSelectorState extends State<DateSelector> {
                           Text(
                             DateFormat('E') // Short weekday (Mon, Tue, etc.)
                                 .format(date),
+                            maxLines: 1,
                             style: TextStyle(
                               color: isSelected ? Colors.black : Colors.grey,
                               fontSize: 11,

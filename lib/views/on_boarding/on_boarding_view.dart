@@ -10,6 +10,9 @@ import '../home/widget/my_drawer.dart';
 
 class OnboardingView extends StatelessWidget {
   static const routeName = "landing";
+  static route() => MaterialPageRoute(
+    builder: (context) => const OnboardingView(),
+  );
 
   const OnboardingView({super.key});
 

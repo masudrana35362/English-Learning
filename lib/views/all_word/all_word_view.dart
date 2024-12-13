@@ -12,57 +12,59 @@ class AllWordView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        EmptySpace.emptyHeight(20),
-        StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).collection('word').snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (snapshot.hasError) {
-              return const Center(child: Text('Error occurred!'));
-            }
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Center(child: FieldLabel(label: 'No data here :(')),
-                ],
-              );
-            }
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: snapshot.data!.docs.length,
-                itemBuilder: (context, index) {
-                  final wordData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
-                  final docId = snapshot.data!.docs[index].id;
-
-                  return GestureDetector(
-                    onLongPress: () {
-                      _showOptions(context, docId);
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 15),
-                      child: TaskCard(
-                        headerText: wordData['word'] ?? 'No Word',
-                        descriptionText: wordData['meaning'] ?? 'No Meaning',
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          EmptySpace.emptyHeight(20),
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).collection('word').snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.hasError) {
+                return const Center(child: Text('Error occurred!'));
+              }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Center(child: FieldLabel(label: 'No data here :(')),
+                  ],
+                );
+              }
+      
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    final wordData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                    final docId = snapshot.data!.docs[index].id;
+              
+                    return GestureDetector(
+                      onLongPress: () {
+                        _showOptions(context, docId);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 15),
+                        child: TaskCard(
+                          headerText: wordData['word'] ?? 'No Word',
+                          descriptionText: wordData['meaning'] ?? 'No Meaning',
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
-        ),
-      ],
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
