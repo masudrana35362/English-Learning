@@ -28,10 +28,10 @@ class AllWordView extends StatelessWidget {
                 return const Center(child: Text('Error occurred!'));
               }
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Column(
+                return const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Center(child: FieldLabel(label: 'No data here :(')),
+                    Center(child: FieldLabel(label: 'No data here :(')),
                   ],
                 );
               }
