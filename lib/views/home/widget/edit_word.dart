@@ -79,47 +79,51 @@ class _EditWordState extends State<EditWord> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(
-        title: const Text('E D I T  W O R D'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(height: 10),
-              FieldWithLabel(
-                label: 'Word',
-                hintText: 'Word',
-                controller: titleController,
-              ),
-              FieldWithLabel(
-                label: 'Meaning',
-                hintText: 'Meaning',
-                controller: descriptionController,
-                maxLines: 3,
-              ),
-              EmptySpace.emptyHeight(20),
-              ValueListenableBuilder(
-                valueListenable: isLoading,
-                builder: (BuildContext context, bool value, Widget? child) {
-                  return SizedBox(
-                    width: double.infinity,
-                    height: 46,
-                    child: CustomButton(
-                        onPressed: () async {
-                          await updateTaskToDb();
-                        },
-                        btText: 'U P D A T E',
-                        isLoading: value),
-                  );
-                },
-              )
+              const Text('E D I T W O R D', style: TextStyle(fontSize: 20)),
+              IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.close)),
             ],
           ),
-        ),
+          const Divider(),
+          const SizedBox(height: 10),
+          FieldWithLabel(
+            label: 'Word',
+            hintText: 'Word',
+            controller: titleController,
+          ),
+          FieldWithLabel(
+            label: 'Meaning',
+            hintText: 'Meaning',
+            controller: descriptionController,
+            maxLines: 3,
+          ),
+          EmptySpace.emptyHeight(20),
+          ValueListenableBuilder(
+            valueListenable: isLoading,
+            builder: (BuildContext context, bool value, Widget? child) {
+              return SizedBox(
+                width: double.infinity,
+                height: 46,
+                child: CustomButton(
+                    onPressed: () async {
+                      await updateTaskToDb();
+                    },
+                    btText: 'U P D A T E',
+                    isLoading: value),
+              );
+            },
+          )
+        ],
       ),
     );
   }

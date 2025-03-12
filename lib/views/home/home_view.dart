@@ -98,10 +98,19 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('Edit'),
               onTap: () {
                 Navigator.pop(context); // Close the bottom sheet
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditWord(id: docId),
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child:  Column(
+                      mainAxisSize: MainAxisSize.min, // Makes it wrap the content height
+                      children: [
+                        EditWord(id: docId),
+                      ],
+                    ),
                   ),
                 );
               },
