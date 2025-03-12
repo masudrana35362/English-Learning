@@ -6,7 +6,6 @@ import 'package:english_learning/helper/widget/empty_spacer_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../helper/widget/text_field.dart';
 
@@ -33,7 +32,6 @@ class _AddNewTaskState extends State<AddNewTask> {
   Future<void> uploadTaskToDb() async {
     isLoading.value = true;
     try {
-      final id = const Uuid().v4();
       final nowInDhaka = DateTime.now().toUtc().add(const Duration(hours: 6));
       final String formattedDate = DateFormat('dd-MM-yyyy').format(nowInDhaka);
 
@@ -46,7 +44,6 @@ class _AddNewTaskState extends State<AddNewTask> {
       });
       isLoading.value = false;
       Navigator.pop(context);
-      print(id);
     } catch (e) {
       print(e);
     }
@@ -54,48 +51,59 @@ class _AddNewTaskState extends State<AddNewTask> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(
-        title: const Text('Add New Task'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(height: 10),
-              FieldWithLabel(
-                label: 'Word',
-                hintText: 'Word',
-                controller: titleController,
-              ),
-              FieldWithLabel(
-                label: 'Meaning',
-                hintText: 'Meaning',
-                controller: descriptionController,
-                maxLines: 3,
-              ),
-              EmptySpace.emptyHeight(20),
-
-              ValueListenableBuilder(
-                valueListenable: isLoading,
-                builder: (context, value, child) {
-                  return SizedBox(
-                    width: double.infinity,
-                    height: 46,
-                    child: CustomButton(
-                        onPressed: () async {
-                          await uploadTaskToDb();
-                        },
-                        btText: 'SUBMIT',
-                        isLoading: value),
-                  );
-                }
-              )
+              const Text('A D D N E W W O R D', style: TextStyle(fontSize: 20)),
+              IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.close)),
             ],
           ),
-        ),
+          const Divider(),
+          const SizedBox(height: 10),
+          FieldWithLabel(
+            label: 'Word',
+            hintText: 'Word',
+            controller: titleController,
+          ),
+          FieldWithLabel(
+            label: 'Meaning',
+            hintText: 'Meaning',
+            controller: descriptionController,
+            maxLines: 3,
+          ),
+          EmptySpace.emptyHeight(20),
+          ValueListenableBuilder(
+              valueListenable: isLoading,
+              builder: (context, value, child) {
+                return SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: CustomButton(
+                      onPressed: () async {
+                        if (titleController.text.trim().isEmpty || descriptionController.text.trim().isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please fill all the fields'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        await uploadTaskToDb();
+                      },
+                      btText: 'SUBMIT',
+                      isLoading: value),
+                );
+              })
+        ],
       ),
     );
   }

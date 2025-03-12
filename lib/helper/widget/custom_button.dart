@@ -40,16 +40,13 @@ class CustomButton extends StatelessWidget {
             : FittedBox(
           child: Padding(
             padding: const EdgeInsets.all(3),
-            child: Padding(
-              padding: const EdgeInsets.all(3),
-              child: Text(
-                btText,
-                maxLines: 1,
-                style: const TextStyle(
-                  color: Color(0xff2954FF),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
+            child: Text(
+              btText,
+              maxLines: 1,
+              style: const TextStyle(
+                color: Color(0xff2954FF),
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
               ),
             ),
           ),

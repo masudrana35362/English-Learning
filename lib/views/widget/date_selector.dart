@@ -84,9 +84,10 @@ class _DateSelectorState extends State<DateSelector> {
                     selectedDate.month == date.month &&
                     selectedDate.year == date.year;
 
-                return SizedBox(
-                  width: (MediaQuery.of(context).size.width - 35) / 7,
+                return Container(
+                  width: (MediaQuery.of(context).size.width - 35) / 8,
                   height: 60,
+                  margin: const EdgeInsets.symmetric(horizontal: 4.2),
                   child: GestureDetector(
                     onTap: () {
                       setState(() {

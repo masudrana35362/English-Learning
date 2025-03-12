@@ -10,9 +10,10 @@ import '../home/widget/my_drawer.dart';
 
 class OnboardingView extends StatelessWidget {
   static const routeName = "landing";
+
   static route() => MaterialPageRoute(
-    builder: (context) => const OnboardingView(),
-  );
+        builder: (context) => const OnboardingView(),
+      );
 
   const OnboardingView({super.key});
 
@@ -42,10 +43,19 @@ class OnboardingView extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AddNewTask(),
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => Dialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const Column(
+                        mainAxisSize: MainAxisSize.min, // Makes it wrap the content height
+                        children: [
+                          AddNewTask(),
+                        ],
+                      ),
                     ),
                   );
                 },
