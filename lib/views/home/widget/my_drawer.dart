@@ -1,5 +1,7 @@
 import 'package:english_learning/helper/widget/alerts.dart';
 import 'package:english_learning/helper/widget/neu_box.dart';
+import 'package:english_learning/helper/widget/neu_box_image.dart';
+import 'package:english_learning/views/about/about_screen.dart';
 import 'package:english_learning/views/login/login_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +20,19 @@ class MyDrawer extends StatelessWidget {
           DrawerHeader(
               child: Column(
                 children: [
-                  NeuBox(
-                    child: Icon(Icons.account_circle_outlined, size: 50,color: Colors.grey.shade600,),
+                  NeuBoxImage(
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage('assets/about_image.jpg'),
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -56,6 +69,21 @@ class MyDrawer extends StatelessWidget {
               leading: const Icon(Icons.perm_device_info),
               onTap: () {
                 Navigator.pop(context);
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Column(
+                      mainAxisSize: MainAxisSize.min, // Makes it wrap the content height
+                      children: [
+                        AboutScreen(),
+                      ],
+                    ),
+                  ),
+                );
               },
             ),
           ),

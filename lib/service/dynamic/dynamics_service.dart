@@ -64,17 +64,6 @@ class DynamicsService with ChangeNotifier {
     currencyCode = "BDT";
     textDirectionRight = false;
 
-    /*final responseData =
-        await NetworkApiServices().getApi(AppUrls.currencyLanguageUrl, null);
-    if (responseData != null) {
-      languageSlug = responseData["language"]?["slug"] ?? "en_GB";
-      currencyRight = responseData["currencyPosition"] != "left";
-      currencySymbol = responseData["symbol"] ?? "\$";
-      currencyCode = responseData["currency_code"] ?? "USD";
-      textDirectionRight = responseData["rtl"] is String
-          ? double.parse(responseData["rtl"])
-          : responseData["rtl"];
-    }*/
     notifyListeners();
   }
 
