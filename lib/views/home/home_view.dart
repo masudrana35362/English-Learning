@@ -71,9 +71,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         onLongPress: () {
                           _showOptions(context, snapshot.data!.docs[index].id);
                         },
-                        child: TaskCard(
-                          headerText: wordData['word'] ?? 'No Word',
-                          descriptionText: wordData['meaning'] ?? 'No Meaning',
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: TaskCard(
+                            headerText: wordData['word'] ?? 'No Word',
+                            descriptionText: wordData['meaning'] ?? 'No Meaning',
+                          ),
                         ),
                       );
                     },

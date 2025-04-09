@@ -51,7 +51,7 @@ class AllWordView extends StatelessWidget {
                         _showOptions(context, docId);
                       },
                       child: Container(
-                        margin: const EdgeInsets.only(bottom: 15),
+                        margin: const EdgeInsets.only(bottom: 10),
                         child: TaskCard(
                           headerText: wordData['word'] ?? 'No Word',
                           descriptionText: wordData['meaning'] ?? 'No Meaning',
