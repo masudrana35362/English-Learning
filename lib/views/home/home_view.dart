@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right: 16.0),
+                      padding: const EdgeInsets.only(right: 16.0, left: 16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -103,7 +103,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               return Expanded(
                                 child: Container(
                                   padding: const EdgeInsets.only(left: 16.0),
-                                  height: 40,
+                                  height: 48,
+                                  // Increased height to fit column content
                                   child: revisionSnapshot.hasData &&
                                           revisionSnapshot.data!.docs.isNotEmpty
                                       ? ListView.builder(
@@ -125,16 +126,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 4.0),
                                               child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     '${revisionData['count']}/${revisionData['total']}',
                                                     style: const TextStyle(
                                                       fontSize: 14,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.green,
                                                     ),
                                                   ),
-                                                  const SizedBox(width: 8),
+                                                  const SizedBox(height: 2),
                                                   Text(
                                                     '${revisionData['revision_date']}',
                                                     style: const TextStyle(
@@ -153,76 +159,81 @@ class _MyHomePageState extends State<MyHomePage> {
                               );
                             },
                           ),
-                          IconButton(
-                            icon: Icon(
-                              showAllDescriptions
-                                  ? Icons.visibility_off
-                                  : Icons.remove_red_eye,
-                              color: Colors.blue.shade600,
-                            ),
-                            onPressed: () {
-                              _toggleAllDescriptions(
-                                  !showAllDescriptions, itemCount);
-                            },
-                          ),
-                          IconButton(
-                            icon:
-                                const Icon(Icons.history, color: Colors.orange),
-                            tooltip: 'Revision',
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  TextEditingController controller =
-                                      TextEditingController();
-                                  return AlertDialog(
-                                    title: const Text('Revision'),
-                                    content: TextField(
-                                      controller: controller,
-                                      keyboardType: TextInputType.number,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Enter remembered count',
-                                      ),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Cancel'),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          final entered =
-                                              int.tryParse(controller.text);
-                                          if (entered != null &&
-                                              entered >= 0 &&
-                                              entered <= itemCount) {
-                                            final today =
-                                                DateFormat('dd-MM-yyyy')
-                                                    .format(DateTime.now());
-                                            await FirebaseFirestore.instance
-                                                .collection('users')
-                                                .doc(FirebaseAuth
-                                                    .instance.currentUser!.uid)
-                                                .collection('revision')
-                                                .add({
-                                              'total': itemCount,
-                                              'count': entered,
-                                              'date': DateFormat('dd-MM-yyyy')
-                                                  .format(selectedDate),
-                                              'revision_date': today,
-                                            });
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                        child: const Text('Submit'),
-                                      ),
-                                    ],
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  showAllDescriptions
+                                      ? Icons.visibility_off
+                                      : Icons.remove_red_eye,
+                                  color: Colors.blue.shade600,
+                                ),
+                                onPressed: () {
+                                  _toggleAllDescriptions(
+                                      !showAllDescriptions, itemCount);
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.history,
+                                    color: Colors.orange),
+                                tooltip: 'Revision',
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      TextEditingController controller =
+                                          TextEditingController();
+                                      return AlertDialog(
+                                        title: const Text('Revision'),
+                                        content: TextField(
+                                          controller: controller,
+                                          keyboardType: TextInputType.number,
+                                          decoration: const InputDecoration(
+                                            labelText: 'Enter remembered count',
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Cancel'),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              final entered =
+                                                  int.tryParse(controller.text);
+                                              if (entered != null &&
+                                                  entered >= 0 &&
+                                                  entered <= itemCount) {
+                                                final today =
+                                                    DateFormat('dd-MM-yyyy')
+                                                        .format(DateTime.now());
+                                                await FirebaseFirestore.instance
+                                                    .collection('users')
+                                                    .doc(FirebaseAuth.instance
+                                                        .currentUser!.uid)
+                                                    .collection('revision')
+                                                    .add({
+                                                  'total': itemCount,
+                                                  'count': entered,
+                                                  'date':
+                                                      DateFormat('dd-MM-yyyy')
+                                                          .format(selectedDate),
+                                                  'revision_date': today,
+                                                });
+                                                Navigator.pop(context);
+                                              }
+                                            },
+                                            child: const Text('Submit'),
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   );
                                 },
-                              );
-                            },
+                              ),
+                            ],
                           ),
                         ],
                       ),
