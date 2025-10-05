@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:english_learning/helper/widget/empty_spacer_helper.dart';
 import 'package:english_learning/views/home/widget/edit_word.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +20,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   DateTime selectedDate = DateTime.now().toUtc().add(const Duration(hours: 6));
+  bool showAllDescriptions = true;
+  List<bool> itemVisibilities = [];
+
+  void _toggleAllDescriptions(bool value, int itemCount) {
+    setState(() {
+      showAllDescriptions = value;
+      itemVisibilities = List<bool>.filled(itemCount, value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +46,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
-            EmptySpace.emptyHeight(10),
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection("users")
@@ -58,29 +65,57 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return const Center(child: Text('No data here :('));
                 }
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      final wordData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
-                      return GestureDetector(
-                        onLongPress: () {
-                          _showOptions(context, snapshot.data!.docs[index].id);
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: TaskCard(
-                            headerText: wordData['word'] ?? 'No Word',
-                            descriptionText: wordData['meaning'] ?? 'No Meaning',
+                final itemCount = snapshot.data!.docs.length;
+                if (itemVisibilities.length != itemCount) {
+                  itemVisibilities = List<bool>.filled(itemCount, showAllDescriptions);
+                }
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          icon: Icon(
+                            showAllDescriptions ? Icons.visibility_off : Icons.remove_red_eye,
+                            color: Colors.blue.shade600,
                           ),
+                          onPressed: () {
+                            _toggleAllDescriptions(!showAllDescriptions, itemCount);
+                          },
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: itemCount,
+                        itemBuilder: (context, index) {
+                          final wordData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                          return GestureDetector(
+                            onLongPress: () {
+                              _showOptions(context, snapshot.data!.docs[index].id);
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              child: TaskCard(
+                                headerText: wordData['word'] ?? 'No Word',
+                                descriptionText: wordData['meaning'] ?? 'No Meaning',
+                                showDescription: itemVisibilities[index],
+                                onEyeTap: () {
+                                  setState(() {
+                                    itemVisibilities[index] = !itemVisibilities[index];
+                                  });
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
@@ -108,8 +143,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child:  Column(
-                      mainAxisSize: MainAxisSize.min, // Makes it wrap the content height
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      // Makes it wrap the content height
                       children: [
                         EditWord(id: docId),
                       ],
@@ -148,7 +184,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             TextButton(
               onPressed: () {
-                FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).collection('word').doc(docId).delete();
+                FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .collection('word')
+                    .doc(docId)
+                    .delete();
                 Navigator.pop(context); // Close the dialog
               },
               child: const Text(

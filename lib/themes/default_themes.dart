@@ -209,7 +209,7 @@ class DefaultThemes {
       checkboxTheme: checkboxTheme(dProvider),
       textButtonTheme: textButtonThemeData(dProvider),
       switchTheme: switchThemeData(dProvider),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         surfaceTintColor: dProvider.whiteColor,
         backgroundColor: dProvider.whiteColor,
       ));
