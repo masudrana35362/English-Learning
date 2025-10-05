@@ -28,7 +28,7 @@ class NeuBox extends StatelessWidget {
               offset: Offset(-4, -4),
             )
           ]),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(5),
       child: child,
     );
   }

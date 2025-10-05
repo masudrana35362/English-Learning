@@ -18,41 +18,38 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NeuBox(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: RichText(
-                text: TextSpan(
-                  style: DefaultTextStyle.of(context).style,
-                  children: [
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                style: DefaultTextStyle.of(context).style,
+                children: [
+                  TextSpan(
+                    text: headerText,
+                    style: TextStyle(
+                        color: Colors.blue.shade600,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  if (showDescription)
                     TextSpan(
-                      text: headerText,
-                      style: TextStyle(
-                          color: Colors.blue.shade600,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600),
+                      text: " - $descriptionText",
+                      style: TextStyle(color: Colors.blue.shade600, fontSize: 16),
                     ),
-                    if (showDescription)
-                      TextSpan(
-                        text: " - $descriptionText",
-                        style: TextStyle(color: Colors.blue.shade600, fontSize: 16),
-                      ),
-                  ],
-                ),
+                ],
               ),
             ),
-            IconButton(
-              icon: Icon(
-                showDescription ? Icons.visibility_off : Icons.remove_red_eye,
-                color: Colors.blue.shade600,
-              ),
-              onPressed: onEyeTap,
+          ),
+          IconButton(
+            icon: Icon(
+              showDescription ? Icons.visibility_off : Icons.remove_red_eye,
+              color: Colors.blue.shade600,
             ),
-          ],
-        ),
+            onPressed: onEyeTap,
+          ),
+        ],
       ),
     );
   }

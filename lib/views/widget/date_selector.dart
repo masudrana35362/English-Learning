@@ -39,11 +39,11 @@ class _DateSelectorState extends State<DateSelector> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                width: 60,
-                height: 60,
+                width: 40,
+                height: 40,
                 child: NeuBox(
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios, size: 20),
+                    icon: const Icon(Icons.arrow_back_ios, size: 10),
                     onPressed: () {
                       setState(() {
                         weekOffset--;
@@ -54,11 +54,11 @@ class _DateSelectorState extends State<DateSelector> {
               ),
               FieldLabel(label: monthName),
               SizedBox(
-                width: 60,
-                height: 60,
+                width: 40,
+                height: 40,
                 child: NeuBox(
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios, size: 20),
+                    icon: const Icon(Icons.arrow_forward_ios, size: 10),
                     onPressed: () {
                       setState(() {
                         weekOffset++;
@@ -73,7 +73,7 @@ class _DateSelectorState extends State<DateSelector> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: SizedBox(
-            height: 64,
+            height: 50,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: weekDates.length,
@@ -86,7 +86,6 @@ class _DateSelectorState extends State<DateSelector> {
 
                 return Container(
                   width: (MediaQuery.of(context).size.width - 35) / 8,
-                  height: 60,
                   margin: const EdgeInsets.symmetric(horizontal: 4.2),
                   child: GestureDetector(
                     onTap: () {
@@ -106,7 +105,7 @@ class _DateSelectorState extends State<DateSelector> {
                             DateFormat('d').format(date), // Day of the month
                             style: TextStyle(
                               color: isSelected ? Colors.black : Colors.grey,
-                              fontSize: 12,
+                              fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -116,7 +115,7 @@ class _DateSelectorState extends State<DateSelector> {
                             maxLines: 1,
                             style: TextStyle(
                               color: isSelected ? Colors.black : Colors.grey,
-                              fontSize: 11,
+                              fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

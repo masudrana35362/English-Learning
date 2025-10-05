@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:english_learning/views/home/widget/edit_word.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,23 +69,162 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
                 final itemCount = snapshot.data!.docs.length;
                 if (itemVisibilities.length != itemCount) {
-                  itemVisibilities = List<bool>.filled(itemCount, showAllDescriptions);
+                  itemVisibilities =
+                      List<bool>.filled(itemCount, showAllDescriptions);
                 }
                 return Column(
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 16.0),
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          icon: Icon(
-                            showAllDescriptions ? Icons.visibility_off : Icons.remove_red_eye,
-                            color: Colors.blue.shade600,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Revision List (always visible, shows message if empty)
+                          StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .collection("revision")
+                                .where("date", isEqualTo: formattedDate)
+                                .snapshots(),
+                            builder: (context, revisionSnapshot) {
+                              if (revisionSnapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const SizedBox(height: 40);
+                              }
+                              if (revisionSnapshot.hasError) {
+                                return const Text('Error loading revisions');
+                              }
+                              if (!revisionSnapshot.hasData ||
+                                  revisionSnapshot.data!.docs.isEmpty) {
+                                return const Text('No revision yet',
+                                    style: TextStyle(color: Colors.grey));
+                              }
+                              return Expanded(
+                                child: Container(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  height: 40,
+                                  child: revisionSnapshot.hasData &&
+                                          revisionSnapshot.data!.docs.isNotEmpty
+                                      ? ListView.builder(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: revisionSnapshot
+                                              .data!.docs.length,
+                                          itemBuilder: (context, index) {
+                                            final revisionData =
+                                                revisionSnapshot
+                                                        .data!.docs[index]
+                                                        .data()
+                                                    as Map<String, dynamic>;
+
+                                            log(revisionData.toString());
+
+                                            return Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 4.0),
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    '${revisionData['count']}/${revisionData['total']}',
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.green,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    '${revisionData['revision_date']}',
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        )
+                                      : const Text('No revision yet',
+                                          style: TextStyle(color: Colors.grey)),
+                                ),
+                              );
+                            },
                           ),
-                          onPressed: () {
-                            _toggleAllDescriptions(!showAllDescriptions, itemCount);
-                          },
-                        ),
+                          IconButton(
+                            icon: Icon(
+                              showAllDescriptions
+                                  ? Icons.visibility_off
+                                  : Icons.remove_red_eye,
+                              color: Colors.blue.shade600,
+                            ),
+                            onPressed: () {
+                              _toggleAllDescriptions(
+                                  !showAllDescriptions, itemCount);
+                            },
+                          ),
+                          IconButton(
+                            icon:
+                                const Icon(Icons.history, color: Colors.orange),
+                            tooltip: 'Revision',
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  TextEditingController controller =
+                                      TextEditingController();
+                                  return AlertDialog(
+                                    title: const Text('Revision'),
+                                    content: TextField(
+                                      controller: controller,
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Enter remembered count',
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Cancel'),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          final entered =
+                                              int.tryParse(controller.text);
+                                          if (entered != null &&
+                                              entered >= 0 &&
+                                              entered <= itemCount) {
+                                            final today =
+                                                DateFormat('dd-MM-yyyy')
+                                                    .format(DateTime.now());
+                                            await FirebaseFirestore.instance
+                                                .collection('users')
+                                                .doc(FirebaseAuth
+                                                    .instance.currentUser!.uid)
+                                                .collection('revision')
+                                                .add({
+                                              'total': itemCount,
+                                              'count': entered,
+                                              'date': DateFormat('dd-MM-yyyy')
+                                                  .format(selectedDate),
+                                              'revision_date': today,
+                                            });
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                        child: const Text('Submit'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
                     Padding(
@@ -93,20 +234,24 @@ class _MyHomePageState extends State<MyHomePage> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: itemCount,
                         itemBuilder: (context, index) {
-                          final wordData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                          final wordData = snapshot.data!.docs[index].data()
+                              as Map<String, dynamic>;
                           return GestureDetector(
                             onLongPress: () {
-                              _showOptions(context, snapshot.data!.docs[index].id);
+                              _showOptions(
+                                  context, snapshot.data!.docs[index].id);
                             },
                             child: Container(
                               margin: const EdgeInsets.only(bottom: 10),
                               child: TaskCard(
                                 headerText: wordData['word'] ?? 'No Word',
-                                descriptionText: wordData['meaning'] ?? 'No Meaning',
+                                descriptionText:
+                                    wordData['meaning'] ?? 'No Meaning',
                                 showDescription: itemVisibilities[index],
                                 onEyeTap: () {
                                   setState(() {
-                                    itemVisibilities[index] = !itemVisibilities[index];
+                                    itemVisibilities[index] =
+                                        !itemVisibilities[index];
                                   });
                                 },
                               ),
