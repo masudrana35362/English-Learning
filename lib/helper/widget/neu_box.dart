@@ -12,10 +12,12 @@ class NeuBox extends StatelessWidget {
       decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.background,
           borderRadius: BorderRadius.circular(12),
-          border: color == null ? null: Border.all(
-            color: Colors.orange,
-            width: 1,
-          ),
+          border: color == null
+              ? null
+              : Border.all(
+                  color: Colors.orange,
+                  width: 1,
+                ),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.shade500,

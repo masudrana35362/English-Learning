@@ -120,16 +120,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     as Map<String, dynamic>;
 
                                             log(revisionData.toString());
-
-                                            return Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 4.0),
+                                            return SizedBox(
+                                              height: 40,
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     '${revisionData['count']}/${revisionData['total']}',

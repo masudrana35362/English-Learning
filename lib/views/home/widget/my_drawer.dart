@@ -1,5 +1,4 @@
 import 'package:english_learning/helper/widget/alerts.dart';
-import 'package:english_learning/helper/widget/neu_box.dart';
 import 'package:english_learning/helper/widget/neu_box_image.dart';
 import 'package:english_learning/views/about/about_screen.dart';
 import 'package:english_learning/views/login/login_view.dart';
