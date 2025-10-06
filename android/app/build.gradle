@@ -35,10 +35,15 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('english-keystore.jks')
-            storePassword 'devmasudrana'
-            keyAlias 'english'
-            keyPassword 'devmasudrana'
+            def keyProps = new Properties()
+            def keyPropsFile = rootProject.file('../key.properties')
+            if (keyPropsFile.exists()) {
+                keyProps.load(new FileInputStream(keyPropsFile))
+                storeFile file(keyProps['storeFile'])
+                storePassword keyProps['storePassword']
+                keyAlias keyProps['keyAlias']
+                keyPassword keyProps['keyPassword']
+            }
         }
     }
 
@@ -55,7 +60,10 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            // Debug build config (no minification)
         }
     }
 }
